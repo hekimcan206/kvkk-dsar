@@ -1,4 +1,5 @@
 <Solution>
   <Project Path="src/KvkkDsar.Core/KvkkDsar.Core.csproj" />
   <Project Path="src/KvkkDsar.Synthetic/KvkkDsar.Synthetic.csproj" />
+  <Project Path="tests/KvkkDsar.UnitTests/KvkkDsar.UnitTests.csproj" />
 </Solution>
