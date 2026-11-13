@@ -3,4 +3,5 @@
   <Project Path="src/KvkkDsar.Synthetic/KvkkDsar.Synthetic.csproj" />
   <Project Path="tests/KvkkDsar.UnitTests/KvkkDsar.UnitTests.csproj" />
   <Project Path="src/KvkkDsar.Postgres/KvkkDsar.Postgres.csproj" />
+  <Project Path="src/KvkkDsar.Api/KvkkDsar.Api.csproj" />
 </Solution>

@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <RootNamespace>KvkkDsar.Api</RootNamespace>
+    <!-- The chiseled runtime image ships without ICU; invariant mode keeps behaviour identical locally and in the container. -->
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Scalar.AspNetCore" />
+    <PackageReference Include="Npgsql" />
+    <PackageReference Include="Serilog.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+    <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
+    <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\KvkkDsar.Core\KvkkDsar.Core.csproj" />
+    <ProjectReference Include="..\KvkkDsar.Postgres\KvkkDsar.Postgres.csproj" />
+    <ProjectReference Include="..\KvkkDsar.Synthetic\KvkkDsar.Synthetic.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Persistence\Migrations\*.sql" LogicalName="migrations/%(Filename)%(Extension)" />
+    <Content Include="..\..\samples\clinic.classification.json" Link="samples\clinic.classification.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+    <Content Include="..\..\samples\dsar-policy.json" Link="samples\dsar-policy.json" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="KvkkDsar.IntegrationTests" />
+    <InternalsVisibleTo Include="KvkkDsar.Benchmarks" />
+  </ItemGroup>
+
+</Project>
