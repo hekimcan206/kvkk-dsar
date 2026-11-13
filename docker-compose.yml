@@ -1,0 +1,141 @@
+# `docker compose up` runs the whole demo with zero manual steps:
+#   postgres  -> two databases (dsar = workflow store, clinic = synthetic source system) and five least-privilege roles
+#   migrator  -> api image, `--migrate-only`, creates the workflow schema as dsar_migrator, exits
+#   seed      -> api image, `--seed-clinic`, loads 2,000 synthetic people into the clinic as clinic_owner, exits
+#   api       -> the service, as dsar_app (workflow) / dsar_finder (discovery) / dsar_eraser (approved plans only)
+#   demo      -> one access + erasure request end to end: OTP to the phone on file, discovery, plan, a refused
+#                self-approval, export, approval by a second person, execution, answer letter, signed evidence pack
+#                verified, then a tampered copy rejected; exits 0 only if every check holds
+# All API keys, passwords and base64 keys below are development-only defaults (see .env.example).
+# Optional: `docker compose --profile observability up` adds the Aspire dashboard as an OTLP backend.
+name: kvkk-dsar
+
+x-api-image: &api-image
+  image: kvkk-dsar-api:local
+  build:
+    context: .
+    dockerfile: Dockerfile
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: dsar
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres-dev-only}
+      MIGRATOR_PASSWORD: ${MIGRATOR_PASSWORD:-migrator-dev-only}
+      APP_PASSWORD: ${APP_PASSWORD:-app-dev-only}
+      CLINIC_OWNER_PASSWORD: ${CLINIC_OWNER_PASSWORD:-owner-dev-only}
+      FINDER_PASSWORD: ${FINDER_PASSWORD:-finder-dev-only}
+      ERASER_PASSWORD: ${ERASER_PASSWORD:-eraser-dev-only}
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-58761}:5432"
+    volumes:
+      - ./deploy/postgres/init:/docker-entrypoint-initdb.d:ro
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d dsar"]
+      interval: 2s
+      timeout: 3s
+      retries: 30
+
+  migrator:
+    <<: *api-image
+    command: ["--migrate-only"]
+    environment:
+      ConnectionStrings__Workflow: Host=postgres;Database=dsar;Username=dsar_migrator;Password=${MIGRATOR_PASSWORD:-migrator-dev-only}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    <<: *api-image
+    command: ["--seed-clinic"]
+    environment:
+      ConnectionStrings__Workflow: Host=postgres;Database=dsar;Username=dsar_app;Password=${APP_PASSWORD:-app-dev-only}
+      Seed__OwnerConnection: Host=postgres;Database=clinic;Username=clinic_owner;Password=${CLINIC_OWNER_PASSWORD:-owner-dev-only}
+      Seed__People: ${SEED_PEOPLE:-2000}
+      Seed__Seed: "2026"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    <<: *api-image
+    ports:
+      - "127.0.0.1:${API_PORT:-58762}:8080"
+    environment:
+      ConnectionStrings__Workflow: Host=postgres;Database=dsar;Username=dsar_app;Password=${APP_PASSWORD:-app-dev-only};Timeout=5
+      Dsar__FingerprintKey: ${DSAR_FINGERPRINT_KEY:-ZGV2LW9ubHkgZmluZ2VycHJpbnQga2V5IDMyYnl0ZXM=}
+      Dsar__OtpPepper: ${DSAR_OTP_PEPPER:-ZGV2LW9ubHkgb3RwIHBlcHBlciBrZXksIDMyIGJ5dGU=}
+      Dsar__SubjectKey: ${DSAR_SUBJECT_KEY:-ZGV2LW9ubHkgc3ViamVjdCBzZWFsIGtleSAzMiBieXQ=}
+      Dsar__DeadlinePolicy: Strict
+      Evidence__SigningKeyPem: ${EVIDENCE_SIGNING_KEY_PEM:-}
+      Sources__0__Name: clinic
+      Sources__0__Schema: clinic
+      Sources__0__FinderConnection: Host=postgres;Database=clinic;Username=dsar_finder;Password=${FINDER_PASSWORD:-finder-dev-only}
+      Sources__0__EraserConnection: Host=postgres;Database=clinic;Username=dsar_eraser;Password=${ERASER_PASSWORD:-eraser-dev-only}
+      Sources__0__Inventory: samples/clinic.classification.json
+      Sources__0__Policy: samples/dsar-policy.json
+      # Operators: SHA-256 of the demo API keys "demo-<role>-key"; only hashes are configured on the server.
+      Operators__0__Name: ayse.intake
+      Operators__0__KeySha256: 75d99c9115e137dc3c7a11f4dce0f96aef0601f13a90faa3f59b668bd0dbfb7a
+      Operators__0__Roles__0: intake
+      Operators__1__Name: veli.verifier
+      Operators__1__KeySha256: 3d3e5cd16a24dd772b9145fd36fae53ef180a32de38299209a439af359548b3c
+      Operators__1__Roles__0: verifier
+      Operators__2__Name: deniz.dpo
+      Operators__2__KeySha256: 944d4b61d924a3592680246ed23d4186d41ed837a4ec40b8db9fc301f0bacbec
+      Operators__2__Roles__0: dpo
+      Operators__3__Name: mert.dpo
+      Operators__3__KeySha256: 6898f507410dec0b509802658df3b6c322867b02baa8be606415587f70596c06
+      Operators__3__Roles__0: dpo
+      Operators__3__Roles__1: approver
+      Operators__4__Name: zeynep.legal
+      Operators__4__KeySha256: ec5dc107c9b9c5e2defb12863a7f7dafc849b45eec60ff612381c7dd1906a943
+      Operators__4__Roles__0: approver
+      Operators__5__Name: emre.ops
+      Operators__5__KeySha256: c7d3bcd76d31ed8b7760c96ee2c7b910402310b10ee17bf390c81f2574b119bc
+      Operators__5__Roles__0: executor
+      Operators__6__Name: selin.audit
+      Operators__6__KeySha256: 32128c4860aaf542bbd1ec757057f33e35fbf246a1dcea6d23c388a97eacffe8
+      Operators__6__Roles__0: auditor
+      # Demo only: one-time codes readable at /demo/inbox/{id} in place of a real SMS / e-mail provider.
+      Demo__Inbox: "true"
+      OpenApi__Enabled: "true"
+      OTEL_SERVICE_NAME: kvkk-dsar
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+    depends_on:
+      migrator:
+        condition: service_completed_successfully
+      seed:
+        condition: service_completed_successfully
+    # No container HEALTHCHECK: the chiseled image has no shell or curl. Probe /health/live and /health/ready over HTTP.
+    restart: unless-stopped
+
+  demo:
+    image: alpine:3.20
+    command: ["sh", "/demo/demo.sh"]
+    environment:
+      API_URL: http://api:8080
+    volumes:
+      - ./deploy/demo:/demo:ro
+    depends_on:
+      api:
+        condition: service_started
+    restart: "no"
+
+  aspire-dashboard:
+    image: mcr.microsoft.com/dotnet/aspire-dashboard:13.6
+    profiles: ["observability"]
+    environment:
+      # Local-only convenience; never expose an unsecured dashboard beyond localhost.
+      DASHBOARD__FRONTEND__AUTHMODE: Unsecured
+      DASHBOARD__OTLP__AUTHMODE: Unsecured
+    ports:
+      - "127.0.0.1:58763:18888"
+
+volumes:
+  pgdata:
