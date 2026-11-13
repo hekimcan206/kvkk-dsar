@@ -4,4 +4,5 @@
   <Project Path="tests/KvkkDsar.UnitTests/KvkkDsar.UnitTests.csproj" />
   <Project Path="src/KvkkDsar.Postgres/KvkkDsar.Postgres.csproj" />
   <Project Path="src/KvkkDsar.Api/KvkkDsar.Api.csproj" />
+  <Project Path="tests/KvkkDsar.IntegrationTests/KvkkDsar.IntegrationTests.csproj" />
 </Solution>
