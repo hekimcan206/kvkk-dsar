@@ -1,0 +1,281 @@
+{
+  "scenario": "discovery",
+  "measuredAt": "2026-11-13T14:05:51.8545039+00:00",
+  "wallSeconds": 688.8,
+  "environment": {
+    "os": "Microsoft Windows 10.0.26200",
+    "runtime": ".NET 10.0.12",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "logicalCores": 16
+  },
+  "result": {
+    "postgres": "17-alpine, 2 CPUs, 2 GiB, shared_buffers 512MB",
+    "subjectsPerSize": 200,
+    "runs": [
+      {
+        "people": 10000,
+        "rows": 58751,
+        "loadSeconds": 2.8,
+        "advice": [
+          {
+            "Table": "randevular",
+            "Column": "notlar",
+            "Purpose": "Phone FreeText lookup",
+            "estimatedRows": 14211
+          },
+          {
+            "Table": "faturalar",
+            "Column": "hasta_id",
+            "Purpose": "foreign key faturalar_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 10583
+          },
+          {
+            "Table": "randevular",
+            "Column": "hasta_id",
+            "Purpose": "foreign key randevular_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 14211
+          },
+          {
+            "Table": "receteler",
+            "Column": "hasta_id",
+            "Purpose": "foreign key receteler_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 10251
+          },
+          {
+            "Table": "tanilar",
+            "Column": "hasta_id",
+            "Purpose": "foreign key tanilar_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 10418
+          }
+        ],
+        "indexBuildSeconds": 0.8,
+        "discoveryBeforeAdvice": {
+          "Latency": {
+            "Samples": 200,
+            "MedianMs": 195.143,
+            "P95Ms": 237.774,
+            "P99Ms": 256.938,
+            "MinMs": 150.877,
+            "MaxMs": 534.783
+          },
+          "MedianQueries": 16,
+          "MedianOwnedRows": 7
+        },
+        "discoveryAfterAdvice": {
+          "Latency": {
+            "Samples": 200,
+            "MedianMs": 46.485,
+            "P95Ms": 67.904,
+            "P99Ms": 75.932,
+            "MinMs": 30.568,
+            "MaxMs": 81.112
+          },
+          "MedianQueries": 16,
+          "MedianOwnedRows": 7
+        },
+        "executionBeforeAdvice": {
+          "Total": {
+            "Samples": 30,
+            "MedianMs": 437.282,
+            "P95Ms": 537.613,
+            "P99Ms": 639.505,
+            "MinMs": 374.478,
+            "MaxMs": 639.505
+          },
+          "Plan": {
+            "Samples": 30,
+            "MedianMs": 214.939,
+            "P95Ms": 273.101,
+            "P99Ms": 279.76,
+            "MinMs": 164.821,
+            "MaxMs": 279.76
+          },
+          "Execute": {
+            "Samples": 30,
+            "MedianMs": 208.354,
+            "P95Ms": 257.852,
+            "P99Ms": 366.4,
+            "MinMs": 183.054,
+            "MaxMs": 366.4
+          },
+          "RowsDeleted": 28,
+          "RowsUpdated": 81,
+          "Drifts": 0
+        },
+        "executionAfterAdvice": {
+          "Total": {
+            "Samples": 30,
+            "MedianMs": 123.814,
+            "P95Ms": 154.1,
+            "P99Ms": 161.65,
+            "MinMs": 77.019,
+            "MaxMs": 161.65
+          },
+          "Plan": {
+            "Samples": 30,
+            "MedianMs": 59.664,
+            "P95Ms": 75.551,
+            "P99Ms": 77.137,
+            "MinMs": 36.032,
+            "MaxMs": 77.137
+          },
+          "Execute": {
+            "Samples": 30,
+            "MedianMs": 61.714,
+            "P95Ms": 80.878,
+            "P99Ms": 84.512,
+            "MinMs": 40.985,
+            "MaxMs": 84.512
+          },
+          "RowsDeleted": 49,
+          "RowsUpdated": 73,
+          "Drifts": 0
+        }
+      },
+      {
+        "people": 100000,
+        "rows": 586449,
+        "loadSeconds": 17.6,
+        "advice": [
+          {
+            "Table": "customers",
+            "Column": "email_address",
+            "Purpose": "Email Exact lookup",
+            "estimatedRows": 34877
+          },
+          {
+            "Table": "customers",
+            "Column": "phone_number",
+            "Purpose": "Phone Exact lookup",
+            "estimatedRows": 34877
+          },
+          {
+            "Table": "hastalar",
+            "Column": "cep_telefonu",
+            "Purpose": "Phone Exact lookup",
+            "estimatedRows": 69975
+          },
+          {
+            "Table": "hastalar",
+            "Column": "eposta",
+            "Purpose": "Email Exact lookup",
+            "estimatedRows": 69975
+          },
+          {
+            "Table": "randevular",
+            "Column": "notlar",
+            "Purpose": "Phone FreeText lookup",
+            "estimatedRows": 139348
+          },
+          {
+            "Table": "faturalar",
+            "Column": "hasta_id",
+            "Purpose": "foreign key faturalar_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 104930
+          },
+          {
+            "Table": "randevular",
+            "Column": "hasta_id",
+            "Purpose": "foreign key randevular_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 139348
+          },
+          {
+            "Table": "receteler",
+            "Column": "hasta_id",
+            "Purpose": "foreign key receteler_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 104317
+          },
+          {
+            "Table": "tanilar",
+            "Column": "hasta_id",
+            "Purpose": "foreign key tanilar_hasta_fk (discovery walk and parent DELETE checks)",
+            "estimatedRows": 104777
+          }
+        ],
+        "indexBuildSeconds": 6.9,
+        "discoveryBeforeAdvice": {
+          "Latency": {
+            "Samples": 200,
+            "MedianMs": 1870.773,
+            "P95Ms": 2618.09,
+            "P99Ms": 2841.718,
+            "MinMs": 1406.03,
+            "MaxMs": 2948.301
+          },
+          "MedianQueries": 16,
+          "MedianOwnedRows": 8
+        },
+        "discoveryAfterAdvice": {
+          "Latency": {
+            "Samples": 200,
+            "MedianMs": 50.965,
+            "P95Ms": 177.69,
+            "P99Ms": 319.347,
+            "MinMs": 23.902,
+            "MaxMs": 580.038
+          },
+          "MedianQueries": 16,
+          "MedianOwnedRows": 8
+        },
+        "executionBeforeAdvice": {
+          "Total": {
+            "Samples": 30,
+            "MedianMs": 4597.455,
+            "P95Ms": 6533.458,
+            "P99Ms": 7940.218,
+            "MinMs": 3757.249,
+            "MaxMs": 7940.218
+          },
+          "Plan": {
+            "Samples": 30,
+            "MedianMs": 2222.644,
+            "P95Ms": 3589.235,
+            "P99Ms": 4906.779,
+            "MinMs": 1776.505,
+            "MaxMs": 4906.779
+          },
+          "Execute": {
+            "Samples": 30,
+            "MedianMs": 2309.008,
+            "P95Ms": 3033.438,
+            "P99Ms": 3293.074,
+            "MinMs": 1781.862,
+            "MaxMs": 3293.074
+          },
+          "RowsDeleted": 44,
+          "RowsUpdated": 70,
+          "Drifts": 0
+        },
+        "executionAfterAdvice": {
+          "Total": {
+            "Samples": 30,
+            "MedianMs": 107.081,
+            "P95Ms": 650.788,
+            "P99Ms": 825.382,
+            "MinMs": 59.946,
+            "MaxMs": 825.382
+          },
+          "Plan": {
+            "Samples": 30,
+            "MedianMs": 49.846,
+            "P95Ms": 342.702,
+            "P99Ms": 627.306,
+            "MinMs": 28.731,
+            "MaxMs": 627.306
+          },
+          "Execute": {
+            "Samples": 30,
+            "MedianMs": 57.225,
+            "P95Ms": 198.074,
+            "P99Ms": 308.085,
+            "MinMs": 31.214,
+            "MaxMs": 308.085
+          },
+          "RowsDeleted": 20,
+          "RowsUpdated": 72,
+          "Drifts": 0
+        }
+      }
+    ]
+  }
+}

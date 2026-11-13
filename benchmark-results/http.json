@@ -1,0 +1,113 @@
+{
+  "scenario": "http",
+  "measuredAt": "2026-11-13T14:20:12.4930397+00:00",
+  "wallSeconds": 19.7,
+  "environment": {
+    "os": "Microsoft Windows 10.0.26200",
+    "runtime": ".NET 10.0.12",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "logicalCores": 16
+  },
+  "result": {
+    "requests": 39,
+    "sentToManualReview": 1,
+    "endToEndExcludingEvidence": {
+      "Samples": 39,
+      "MedianMs": 449.003,
+      "P95Ms": 603.618,
+      "P99Ms": 1161.406,
+      "MinMs": 297.659,
+      "MaxMs": 1161.406
+    },
+    "stages": {
+      "create": {
+        "Samples": 40,
+        "MedianMs": 14.124,
+        "P95Ms": 31.514,
+        "P99Ms": 554.848,
+        "MinMs": 6.596,
+        "MaxMs": 554.848
+      },
+      "otp-challenge": {
+        "Samples": 40,
+        "MedianMs": 18.41,
+        "P95Ms": 54.447,
+        "P99Ms": 88.458,
+        "MinMs": 11.646,
+        "MaxMs": 88.458
+      },
+      "demo-inbox": {
+        "Samples": 39,
+        "MedianMs": 4.217,
+        "P95Ms": 29.405,
+        "P99Ms": 55.89,
+        "MinMs": 1.395,
+        "MaxMs": 55.89
+      },
+      "otp-confirm": {
+        "Samples": 39,
+        "MedianMs": 30.563,
+        "P95Ms": 62.417,
+        "P99Ms": 70.255,
+        "MinMs": 19.842,
+        "MaxMs": 70.255
+      },
+      "discovery": {
+        "Samples": 39,
+        "MedianMs": 81.311,
+        "P95Ms": 115.722,
+        "P99Ms": 124.055,
+        "MinMs": 53.515,
+        "MaxMs": 124.055
+      },
+      "plan": {
+        "Samples": 39,
+        "MedianMs": 22.475,
+        "P95Ms": 49.086,
+        "P99Ms": 52.944,
+        "MinMs": 13.168,
+        "MaxMs": 52.944
+      },
+      "approve": {
+        "Samples": 39,
+        "MedianMs": 14.608,
+        "P95Ms": 43.587,
+        "P99Ms": 54.664,
+        "MinMs": 7.729,
+        "MaxMs": 54.664
+      },
+      "execute": {
+        "Samples": 39,
+        "MedianMs": 223.586,
+        "P95Ms": 321.389,
+        "P99Ms": 349.423,
+        "MinMs": 159.54,
+        "MaxMs": 349.423
+      },
+      "respond": {
+        "Samples": 39,
+        "MedianMs": 21.851,
+        "P95Ms": 48.376,
+        "P99Ms": 69.068,
+        "MinMs": 12.996,
+        "MaxMs": 69.068
+      },
+      "evidence": {
+        "Samples": 39,
+        "MedianMs": 11.408,
+        "P95Ms": 33.09,
+        "P99Ms": 33.787,
+        "MinMs": 5.824,
+        "MaxMs": 33.787
+      }
+    },
+    "evidencePackBytes": {
+      "Samples": 39,
+      "MedianMs": 8943,
+      "P95Ms": 9678,
+      "P99Ms": 9684,
+      "MinMs": 8233,
+      "MaxMs": 9684
+    }
+  }
+}

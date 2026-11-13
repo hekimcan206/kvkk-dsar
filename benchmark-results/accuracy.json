@@ -1,0 +1,114 @@
+{
+  "scenario": "accuracy",
+  "measuredAt": "2026-11-13T13:15:43.08017+00:00",
+  "wallSeconds": 133.9,
+  "environment": {
+    "os": "Microsoft Windows 10.0.26200",
+    "runtime": ".NET 10.0.12",
+    "cpu": "Intel64 Family 6 Model 186 Stepping 2, GenuineIntel",
+    "logicalCores": 16
+  },
+  "result": {
+    "people": 5000,
+    "rows": 29378,
+    "truthOwned": 28873,
+    "truthMentions": 870,
+    "modes": [
+      {
+        "mode": "full",
+        "ownedRows": {
+          "truePositives": 28873,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "Precision": 1,
+          "Recall": 1
+        },
+        "mentions": {
+          "truePositives": 870,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "Precision": 1,
+          "Recall": 1
+        },
+        "peopleWithAllRowsFound": "4035/4035",
+        "peopleWithSomeoneElsesRowsClaimed": 0
+      },
+      {
+        "mode": "no-normalisation",
+        "ownedRows": {
+          "truePositives": 28083,
+          "falsePositives": 0,
+          "falseNegatives": 790,
+          "Precision": 1,
+          "Recall": 0.9726
+        },
+        "mentions": {
+          "truePositives": 301,
+          "falsePositives": 0,
+          "falseNegatives": 569,
+          "Precision": 1,
+          "Recall": 0.346
+        },
+        "peopleWithAllRowsFound": "3245/4035",
+        "peopleWithSomeoneElsesRowsClaimed": 0
+      },
+      {
+        "mode": "no-foreign-keys",
+        "ownedRows": {
+          "truePositives": 5411,
+          "falsePositives": 0,
+          "falseNegatives": 23462,
+          "Precision": 1,
+          "Recall": 0.1874
+        },
+        "mentions": {
+          "truePositives": 870,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "Precision": 1,
+          "Recall": 1
+        },
+        "peopleWithAllRowsFound": "532/4035",
+        "peopleWithSomeoneElsesRowsClaimed": 0
+      },
+      {
+        "mode": "mentions-as-ownership",
+        "ownedRows": {
+          "truePositives": 28873,
+          "falsePositives": 1870,
+          "falseNegatives": 0,
+          "Precision": 0.9392,
+          "Recall": 1
+        },
+        "mentions": {
+          "truePositives": 0,
+          "falsePositives": 0,
+          "falseNegatives": 870,
+          "Precision": 1,
+          "Recall": 0
+        },
+        "peopleWithAllRowsFound": "4035/4035",
+        "peopleWithSomeoneElsesRowsClaimed": 1399
+      },
+      {
+        "mode": "naive (exact raw match, no FK, no mentions)",
+        "ownedRows": {
+          "truePositives": 5186,
+          "falsePositives": 1065,
+          "falseNegatives": 23687,
+          "Precision": 0.8296,
+          "Recall": 0.1796
+        },
+        "mentions": {
+          "truePositives": 0,
+          "falsePositives": 0,
+          "falseNegatives": 870,
+          "Precision": 1,
+          "Recall": 0
+        },
+        "peopleWithAllRowsFound": "322/4035",
+        "peopleWithSomeoneElsesRowsClaimed": 952
+      }
+    ]
+  }
+}

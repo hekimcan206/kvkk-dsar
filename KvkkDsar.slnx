@@ -1,8 +1,15 @@
 <Solution>
-  <Project Path="src/KvkkDsar.Core/KvkkDsar.Core.csproj" />
-  <Project Path="src/KvkkDsar.Synthetic/KvkkDsar.Synthetic.csproj" />
-  <Project Path="tests/KvkkDsar.UnitTests/KvkkDsar.UnitTests.csproj" />
-  <Project Path="src/KvkkDsar.Postgres/KvkkDsar.Postgres.csproj" />
-  <Project Path="src/KvkkDsar.Api/KvkkDsar.Api.csproj" />
-  <Project Path="tests/KvkkDsar.IntegrationTests/KvkkDsar.IntegrationTests.csproj" />
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/KvkkDsar.Benchmarks/KvkkDsar.Benchmarks.csproj" />
+  </Folder>
+  <Folder Name="/src/">
+    <Project Path="src/KvkkDsar.Api/KvkkDsar.Api.csproj" />
+    <Project Path="src/KvkkDsar.Core/KvkkDsar.Core.csproj" />
+    <Project Path="src/KvkkDsar.Postgres/KvkkDsar.Postgres.csproj" />
+    <Project Path="src/KvkkDsar.Synthetic/KvkkDsar.Synthetic.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/KvkkDsar.IntegrationTests/KvkkDsar.IntegrationTests.csproj" />
+    <Project Path="tests/KvkkDsar.UnitTests/KvkkDsar.UnitTests.csproj" />
+  </Folder>
 </Solution>
