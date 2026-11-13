@@ -1,0 +1,95 @@
+{
+  // Synthetic controller and illustrative retention periods. Not legal advice: every period and legal basis below
+  // must be confirmed by the controller's own counsel and retention & destruction policy.
+  "version": "2026-11-demo",
+  "controller": {
+    "name": "Örnek Klinik A.Ş. (synthetic)",
+    "address": "Örnek Mah. Deneme Sok. No:1, İstanbul",
+    "contactEmail": "kvkk@klinik.example",
+    "kep": "ornekklinik@hs01.kep.tr"
+  },
+
+  // Inventory findings that are not a data subject's identifier: the branches' own business phone and address.
+  "excludeKeys": ["subeler.telefon", "subeler.adres"],
+
+  // Key columns that name someone other than the row's owner.
+  "mentions": {
+    "personel.acil_durum_tel": { "alsoClear": ["acil_durum_kisi"] }
+  },
+
+  "tables": {
+    "hastalar": {
+      "action": "Erase",
+      "retention": { "years": 20, "anchor": "created_at", "basis": "Patient records: statutory retention for health records (illustrative 20 years), KVKK Art. 5(2)(ç) and 6(3)" },
+      "clearWhileRetained": ["eposta"],
+      "anonymise": { "dogum_tarihi": "TruncateToYear", "cinsiyet": "Keep" },
+      "purpose": "Providing and documenting healthcare",
+      "legalBasis": "KVKK Art. 6(3) (health services) and Art. 5(2)(ç) (legal obligation)",
+      "recipients": ["Ministry of Health e-Nabız (synthetic)"]
+    },
+    "randevular": {
+      "action": "Erase",
+      "retention": { "years": 20, "anchor": "randevu_zamani", "basis": "Part of the patient record (illustrative 20 years)" },
+      "purpose": "Appointment scheduling",
+      "legalBasis": "KVKK Art. 6(3)"
+    },
+    "tanilar": {
+      "action": "Erase",
+      "retention": { "years": 20, "anchor": "kayit_tarihi", "basis": "Part of the patient record (illustrative 20 years)" },
+      "purpose": "Diagnosis and treatment",
+      "legalBasis": "KVKK Art. 6(3)"
+    },
+    "receteler": {
+      "action": "Erase",
+      "retention": { "years": 20, "anchor": "recete_tarihi", "basis": "Part of the patient record (illustrative 20 years)" },
+      "purpose": "Prescriptions",
+      "legalBasis": "KVKK Art. 6(3)"
+    },
+    "faturalar": {
+      "action": "Erase",
+      "retention": { "years": 10, "anchor": "fatura_tarihi", "basis": "Commercial books and records: Turkish Commercial Code Art. 82 (10 years); Tax Procedure Law Art. 253 (5 years)" },
+      "clearWhileRetained": ["odeme_karti"],
+      "purpose": "Billing and accounting",
+      "legalBasis": "KVKK Art. 5(2)(ç) (legal obligation)",
+      "recipients": ["Private health insurers (synthetic)"]
+    },
+    "genetik_testler": {
+      "action": "Erase",
+      "retention": { "years": 20, "anchor": "test_tarihi", "basis": "Part of the patient record (illustrative 20 years)" },
+      "purpose": "Genetic testing",
+      "legalBasis": "KVKK Art. 6(3)",
+      "recipients": ["Reference laboratory (synthetic)"]
+    },
+    "sosyal_degerlendirme": {
+      "action": "Erase",
+      "purpose": "Social service assessment (explicit consent)",
+      "legalBasis": "KVKK Art. 6(2) explicit consent; withdrawn by the erasure request"
+    },
+    "personel": {
+      "action": "Erase",
+      "retention": { "years": 10, "anchor": "isten_cikis_tarihi", "basis": "Employment records: 10-year limitation period for claims (Turkish Code of Obligations Art. 146), counted from termination" },
+      "clearWhileRetained": ["parmak_izi_sablonu", "arac_plakasi"],
+      "purpose": "Human resources and payroll",
+      "legalBasis": "KVKK Art. 5(2)(c) (contract) and (ç) (legal obligation)",
+      "recipients": ["SGK (Social Security Institution)", "Payroll bank (synthetic)"]
+    },
+    "personel_izinleri": {
+      "action": "Erase",
+      "retention": { "years": 10, "anchor": "bitis_tarihi", "basis": "Employment records (Turkish Code of Obligations Art. 146)" },
+      "purpose": "Leave management",
+      "legalBasis": "KVKK Art. 5(2)(c)"
+    },
+    "customers": {
+      "action": "Erase",
+      "purpose": "Online patient portal account",
+      "legalBasis": "KVKK Art. 5(2)(c) (contract)",
+      "recipients": ["Payment service provider (synthetic)"]
+    }
+  },
+
+  "default": {
+    "action": "Erase",
+    "purpose": "Not documented",
+    "legalBasis": "Not documented"
+  }
+}
