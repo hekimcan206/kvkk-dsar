@@ -137,8 +137,23 @@ internal static class RequestEndpoints
             using var buffer = new MemoryStream();
             await request.Body.CopyToAsync(buffer, ct);
             buffer.Position = 0;
+            if (request.ContentType?.StartsWith("application/base64", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                // For clients that cannot send binary bodies (BusyBox wget stops at the first NUL byte).
+                try
+                {
+                    var decoded = Convert.FromBase64String(System.Text.Encoding.ASCII.GetString(buffer.ToArray()).Trim());
+                    return Results.Ok(service.VerifyPack(new MemoryStream(decoded)));
+                }
+                catch (FormatException)
+                {
+                    return Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "The body is not valid base64.");
+                }
+            }
+
             return Results.Ok(service.VerifyPack(buffer));
-        }).RequireRole(Roles.Dpo, Roles.Auditor).WithTags("Evidence").WithSummary("Verify an evidence pack (application/zip body) against this service's signing key.");
+        }).RequireRole(Roles.Dpo, Roles.Auditor).WithTags("Evidence")
+            .WithSummary("Verify an evidence pack (application/zip body, or application/base64) against this service's signing key.");
 
         api.MapGet("/deadlines", async (DeadlineMonitor monitor, CancellationToken ct) => Results.Ok(await monitor.ScanAsync(ct)))
             .RequireRole(Roles.Dpo, Roles.Auditor).WithTags("Deadlines").WithSummary("Open requests by deadline stage (also refreshes stages now).");

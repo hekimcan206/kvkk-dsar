@@ -26,7 +26,11 @@ public sealed class ApiTests(DsarEnvironment env)
     private readonly HttpClient _ops = env.Client("key-ops");
     private readonly HttpClient _audit = env.Client("key-audit");
 
-    /// <summary>A person with the wanted shape that no other test has used yet.</summary>
+    /// <summary>
+    /// A person with the wanted shape that no other test has used yet. Tests that erase a portal account also need a
+    /// patient file: only records carrying the TCKN give the verified person contacts on file, and a portal account is
+    /// found through those contacts.
+    /// </summary>
     private Person Next(Func<GroundTruth, bool> shape)
     {
         lock (Used)
@@ -152,7 +156,7 @@ public sealed class ApiTests(DsarEnvironment env)
     [Fact]
     public async Task Access_and_erasure_need_the_export_first_and_the_export_is_not_stored()
     {
-        var person = Next(t => t.Owned.Any(o => o.Table == "customers"));
+        var person = Next(t => t.Owned.Any(o => o.Table == "customers") && t.Owned.Any(o => o.Table == "hastalar"));
         var created = await CreateAsync(Body(person, [RequestType.Access, RequestType.Erasure], Channel.Kep));
         (await _verifier.PostJson($"api/v1/requests/{created.Id}/verification/channel", new { factor = "QualifiedChannel", evidence = "KEP message 2026/77, e-signature valid" })).EnsureSuccessStatusCode();
         var hash = await DiscoverAndPlanAsync(created.Id);
@@ -180,7 +184,7 @@ public sealed class ApiTests(DsarEnvironment env)
     [Fact]
     public async Task Planner_cannot_approve_and_unknown_keys_are_refused()
     {
-        var person = Next(t => t.Owned.Any(o => o.Table == "customers"));
+        var person = Next(t => t.Owned.Any(o => o.Table == "customers") && t.Owned.Any(o => o.Table == "hastalar"));
         var created = await CreateAsync(Body(person, [RequestType.Erasure], Channel.Kep));
         (await _verifier.PostJson($"api/v1/requests/{created.Id}/verification/channel", new { factor = "QualifiedChannel", evidence = "e-imza ok" })).EnsureSuccessStatusCode();
         var dpo2 = env.Client("key-dpo2"); // dpo + approver roles
@@ -220,7 +224,7 @@ public sealed class ApiTests(DsarEnvironment env)
     [Fact]
     public async Task Parallel_execute_calls_run_the_plan_once()
     {
-        var person = Next(t => t.Owned.Any(o => o.Table == "customers") && t.Owned.Count > 2);
+        var person = Next(t => t.Owned.Any(o => o.Table == "customers") && t.Owned.Any(o => o.Table == "hastalar"));
         var created = await CreateAsync(Body(person, [RequestType.Erasure], Channel.Kep));
         (await _verifier.PostJson($"api/v1/requests/{created.Id}/verification/channel", new { factor = "QualifiedChannel", evidence = "KEP ok" })).EnsureSuccessStatusCode();
         var hash = await DiscoverAndPlanAsync(created.Id);
@@ -239,7 +243,7 @@ public sealed class ApiTests(DsarEnvironment env)
     [Fact]
     public async Task A_crash_after_the_source_commit_is_resumed_without_running_the_plan_twice()
     {
-        var person = Next(t => t.Owned.Any(o => o.Table == "customers"));
+        var person = Next(t => t.Owned.Any(o => o.Table == "customers") && t.Owned.Any(o => o.Table == "hastalar"));
         var created = await CreateAsync(Body(person, [RequestType.Erasure], Channel.Kep));
         (await _verifier.PostJson($"api/v1/requests/{created.Id}/verification/channel", new { factor = "QualifiedChannel", evidence = "KEP ok" })).EnsureSuccessStatusCode();
         var hash = await DiscoverAndPlanAsync(created.Id);
