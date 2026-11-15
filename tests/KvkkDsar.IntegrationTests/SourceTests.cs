@@ -72,11 +72,27 @@ public sealed class SourceTests(DsarEnvironment env)
         var appDelete = async () => await DsarEnvironment.ExecAsync(env.AppConnection, "DELETE FROM dsar.audit_events");
         (await appDelete.Should().ThrowAsync<PostgresException>()).Which.SqlState.Should().Be(PostgresErrorCodes.InsufficientPrivilege);
 
-        var ownerUpdate = async () => await DsarEnvironment.ExecAsync(env.MigratorConnection, "UPDATE dsar.audit_events SET actor = 'x'");
         // No rows may exist yet; TRUNCATE fires the statement trigger regardless.
         var ownerTruncate = async () => await DsarEnvironment.ExecAsync(env.MigratorConnection, "TRUNCATE dsar.audit_events CASCADE");
         (await ownerTruncate.Should().ThrowAsync<PostgresException>()).Which.MessageText.Should().Contain("append-only");
-        await ownerUpdate.Should().NotThrowAsync("an UPDATE that matches rows is refused by the row trigger; covered by the API tests");
+
+        // Other tests share this database and may already have written audit events. An UPDATE that matches rows must be
+        // refused by the row trigger; on an empty table it matches nothing and the trigger never fires.
+        await using (var owner = new NpgsqlConnection(env.MigratorConnection))
+        {
+            await owner.OpenAsync(TestContext.Current.CancellationToken);
+            await using var count = new NpgsqlCommand("SELECT count(*) FROM dsar.audit_events", owner);
+            var rows = (long)(await count.ExecuteScalarAsync(TestContext.Current.CancellationToken))!;
+            var ownerUpdate = async () => await DsarEnvironment.ExecAsync(env.MigratorConnection, "UPDATE dsar.audit_events SET actor = 'x'");
+            if (rows > 0)
+            {
+                (await ownerUpdate.Should().ThrowAsync<PostgresException>()).Which.MessageText.Should().Contain("append-only");
+            }
+            else
+            {
+                await ownerUpdate.Should().NotThrowAsync("an UPDATE on an empty table matches no rows");
+            }
+        }
 
         var appDeleteRequests = async () => await DsarEnvironment.ExecAsync(env.AppConnection, "DELETE FROM dsar.requests");
         (await appDeleteRequests.Should().ThrowAsync<PostgresException>()).Which.SqlState.Should().Be(PostgresErrorCodes.InsufficientPrivilege);
